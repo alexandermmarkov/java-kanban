@@ -1,8 +1,9 @@
-import java.util.ArrayList;
+package tracker.model;
+
 import java.util.HashMap;
 
 public class Epic extends Task {
-    private final HashMap<Integer, Subtask> subtasks;
+    private HashMap<Integer, Subtask> subtasks;
 
     public Epic(String name, String description) {
         super(name, description);
@@ -28,5 +29,13 @@ public class Epic extends Task {
         if ((subtask != null) && (!subtasks.containsKey(id))) {
             subtasks.put(id, subtask);
         }
+    }
+
+    public void deleteSubtask(int id) {
+        subtasks.remove(id);
+    }
+
+    public void deleteSubtasks() {
+        subtasks = new HashMap<>();
     }
 }

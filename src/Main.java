@@ -1,13 +1,18 @@
+import tracker.model.Epic;
+import tracker.model.Subtask;
+import tracker.model.Task;
+import tracker.controllers.TaskManager;
+
 public class Main {
 
     public static void main(String[] args) {
         System.out.println("Поехали!");
         TaskManager taskManager = new TaskManager();
 
-        Task task1 = new Task("Задача1", "Тестовая задача #1");
+        /*Task task1 = new Task("Задача1", "Тестовая задача #1");
         Task task2 = new Task("Задача2", "Тестовая задача #2");
         taskManager.addTask(task1);
-        taskManager.addTask(task2);
+        taskManager.addTask(task2);*/
 
         Epic epic1 = new Epic("Эпик1", "Тестовый Эпик #1");
         taskManager.addEpic(epic1);
@@ -16,15 +21,15 @@ public class Main {
         taskManager.addSubtask(subtask1);
         taskManager.addSubtask(subtask2);
 
-        Epic epic2 = new Epic("Эпик2", "Тестовый Эпик #2");
+       /* Epic epic2 = new Epic("Эпик2", "Тестовый Эпик #2");
         taskManager.addEpic(epic2);
         Subtask subtask3 = new Subtask("Подзадача3", "Тестовая подзадача #3", epic2);
         taskManager.addSubtask(subtask3);
-        System.out.println(taskManager.getTasks());
+        System.out.println(taskManager.getTasks());*/
         System.out.println(taskManager.getEpics());
         System.out.println(taskManager.getSubtasks());
 
-        taskManager.updateTask(1, new Task("Задача1", "Принятая в работу тестовая задача #1", "IN_PROGRESS"));
+        /*taskManager.updateTask(1, new Task("Задача1", "Принятая в работу тестовая задача #1", "IN_PROGRESS"));
         taskManager.updateSubtask(7, new Subtask("Подзадача3", "Выполненная тестовая подзадача #3", epic2, "DONE"));
         System.out.println(taskManager.getTasks());
         System.out.println(taskManager.getEpics());
@@ -35,6 +40,9 @@ public class Main {
         taskManager.deleteTask(1);
         System.out.println(taskManager.getTasks());
         taskManager.deleteEpic(3);
+        System.out.println(taskManager.getEpics());*/
+        taskManager.clearEpics();
         System.out.println(taskManager.getEpics());
+        System.out.println(taskManager.getSubtasks());
     }
 }
