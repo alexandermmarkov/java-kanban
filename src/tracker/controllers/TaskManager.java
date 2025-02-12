@@ -115,6 +115,14 @@ public class TaskManager {
             epic.setStatus("IN_PROGRESS");
         }
     }
+
+    public HashMap<Integer, Subtask> getSubtasksOfEpic(int epicID) {
+        Epic epic = getEpicByID(epicID);
+        if (epic == null) {
+            return null;
+        }
+        return epic.getSubtasks();
+    }
     /// ---------------------------------
 
     /// Подзадачи
@@ -162,14 +170,5 @@ public class TaskManager {
             subtasks.remove(id);
         }
     }
-
     /// ---------------------------------
-
-    public HashMap<Integer, Subtask> getSubtasksOfEpic(int epicID) {
-        Epic epic = getEpicByID(epicID);
-        if (epic == null) {
-            return null;
-        }
-        return epic.getSubtasks();
-    }
 }
