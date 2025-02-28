@@ -1,8 +1,11 @@
 package tracker.model;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class Task {
+    protected static int identificator;
+    public static ArrayList<Integer> idToIgnoreList = new ArrayList<>();
     protected String name;
     protected String description;
     protected TaskStatus status;
@@ -14,7 +17,26 @@ public class Task {
         status = TaskStatus.NEW;
     }
 
+    public Task(String name, String description, int id) {
+        if ((id != 0) && !idToIgnoreList.contains(id)) {
+            idToIgnoreList.add(id);
+            this.id = id;
+        }
+        this.name = name;
+        this.description = description;
+        status = TaskStatus.NEW;
+    }
+
     public Task(String name, String description, String status) {
+        this.name = name;
+        this.description = description;
+        this.status = TaskStatus.valueOf(status);
+    }
+
+    public Task(String name, String description, int id, String status) {
+        if ((id != 0) && !idToIgnoreList.contains(id)) {
+            this.id = id;
+        }
         this.name = name;
         this.description = description;
         this.status = TaskStatus.valueOf(status);
@@ -41,6 +63,14 @@ public class Task {
                 + "description='" + description + "', "
                 + "status='" + status + "', "
                 + '}';
+    }
+
+    public static int getNewIdentificator() {
+        int newId = ++identificator;
+        while (idToIgnoreList.contains(newId)) {
+            newId++;
+        }
+        return newId;
     }
 
     public String getDescription() {
@@ -72,6 +102,11 @@ public class Task {
     }
 
     public void setId(int id) {
+        if (idToIgnoreList.contains(id)) {
+            id = getNewIdentificator();
+        } else {
+            idToIgnoreList.add(id);
+        }
         this.id = id;
     }
 }
