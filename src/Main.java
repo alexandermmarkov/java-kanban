@@ -62,13 +62,6 @@ public class Main {
         taskManager.getSubtaskByID(5);
         taskManager.getSubtaskByID(4);
         printAllTasks(taskManager);
-
-        Task task = new Task("Task", "Task Description");
-        taskManager.addTask(task);
-        System.out.println(task.getId());
-        taskManager.updateTask(task.getId(), new Task("UpdatedTask1","Updated Task1 Description","IN_PROGRESS"));
-        task = taskManager.getTaskByID(task.getId());
-        System.out.println(task);
     }
 
     private static void printAllTasks(TaskManager manager) {

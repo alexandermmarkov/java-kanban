@@ -27,7 +27,7 @@ class EpicTest {
 
         assertNotNull(epics, "Эпики не возвращаются.");
         assertEquals(1, epics.size(), "Неверное количество эпиков.");
-        assertEquals(epic, epics.get(0), "Эпики не совпадают.");
+        assertEquals(epic, epics.getFirst(), "Эпики не совпадают.");
     }
 
     @Test
@@ -41,7 +41,7 @@ class EpicTest {
     void updateEpic() {
         Epic epic = new Epic("Epic", "Epic Description");
         taskManager.addEpic(epic);
-        taskManager.updateEpic(epic.getId(), new Epic("UpdatedEpic","Updated Epic Description"));
+        taskManager.updateEpic(epic.getId(), new Epic("UpdatedEpic", "Updated Epic Description"));
         epic = taskManager.getEpicByID(epic.getId());
         assertEquals("UpdatedEpic Updated Epic Description NEW",
                 epic.getName() + " " + epic.getDescription() + " " + epic.getStatus(),

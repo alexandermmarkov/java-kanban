@@ -27,14 +27,14 @@ class TaskTest {
 
         assertNotNull(tasks, "Задачи не возвращаются.");
         assertEquals(1, tasks.size(), "Неверное количество задач.");
-        assertEquals(task, tasks.get(0), "Задачи не совпадают.");
+        assertEquals(task, tasks.getFirst(), "Задачи не совпадают.");
     }
 
     @Test
     void updateTask() {
         Task task = new Task("Task", "Task Description");
         taskManager.addTask(task);
-        taskManager.updateTask(task.getId(), new Task("UpdatedTask","Updated Task Description","IN_PROGRESS"));
+        taskManager.updateTask(task.getId(), new Task("UpdatedTask", "Updated Task Description", "IN_PROGRESS"));
         task = taskManager.getTaskByID(task.getId());
         assertEquals("UpdatedTask Updated Task Description IN_PROGRESS",
                 task.getName() + " " + task.getDescription() + " " + task.getStatus(),

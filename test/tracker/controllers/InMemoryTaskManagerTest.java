@@ -15,8 +15,7 @@ class InMemoryTaskManagerTest {
     private TaskManager taskManager;
 
     @BeforeEach
-    public void clearListOfUsedIDs() {
-        Task.idToIgnoreList.clear();
+    public void resetTaskManager() {
         taskManager = new InMemoryTaskManager();
     }
 
@@ -36,7 +35,6 @@ class InMemoryTaskManagerTest {
 
         taskManager.addSubtask(subtask);
         final int subtaskId = subtask.getId();
-        ;
         final Subtask savedSubtask = taskManager.getSubtaskByID(subtaskId);
 
         assertNotNull(savedTask, "Задача не найдена.");
@@ -62,7 +60,7 @@ class InMemoryTaskManagerTest {
         assertNotEquals(task1.getId(), task2.getId(), "Конфликт - у обеих задач ID = '" + task1.getId() + "'.");
 
         task3.setId(1);
-        taskManager.addTask(task3);;
+        taskManager.addTask(task3);
         taskManager.addTask(task4);
         assertNotEquals(task3.getId(), task4.getId(), "Конфликт - у обеих задач ID = '" + task3.getId() + "'.");
     }
