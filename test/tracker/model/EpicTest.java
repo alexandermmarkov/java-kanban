@@ -33,7 +33,7 @@ class EpicTest {
     @Test
     void shouldNotBeAbleToAddEpicAsASubtask() {
         Epic epic = new Epic("Epic1", "Epic1");
-        epic.addSubtask(1, epic);
+        epic.addSubtask(epic);
         assertNull(epic.getSubtasks().get(1), "Нельзя добавлять эпики в качестве подзадачи.");
     }
 

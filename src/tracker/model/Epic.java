@@ -25,12 +25,12 @@ public class Epic extends Task {
         return subtasks;
     }
 
-    public void addSubtask(int id, Task subtask) {
+    public void addSubtask(Task subtask) {
         if (!(subtask instanceof Subtask)) {
             return;
         }
-        if (!subtasks.containsKey(id)) {
-            subtasks.put(id, (Subtask) subtask);
+        if (!subtasks.containsKey(subtask.getId())) {
+            subtasks.put(subtask.getId(), (Subtask) subtask);
         }
     }
 

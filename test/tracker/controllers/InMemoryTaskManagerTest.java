@@ -15,7 +15,7 @@ class InMemoryTaskManagerTest {
     private TaskManager taskManager;
 
     @BeforeEach
-    public void resetTaskManager() {
+    public void initializeTaskManager() {
         taskManager = new InMemoryTaskManager();
     }
 
@@ -74,6 +74,28 @@ class InMemoryTaskManagerTest {
         taskManager.addTask(task2);
         assertEquals(task1, taskManager.getTaskByID(task1.getId()), "Задача с ID = '" + task1.getId() + "' изменена после добавления в Менеджер задач.");
         assertEquals(task2, taskManager.getTaskByID(task2.getId()), "Задача с ID = '" + task2.getId() + "' изменена после добавления в Менеджер задач.");
+    }
+
+    @Test
+    void shouldDeleteSubtaskFromEpic() {
+        Epic epic = new Epic("Test Epic", "Test Epic description");
+        Subtask subTask1 = new Subtask("Test Subtask1", "Test Subtask1 description", epic);
+        Subtask subTask2 = new Subtask("Test Subtask2", "Test Subtask2 description", epic);
+        taskManager.addEpic(epic);
+        taskManager.addSubtask(subTask1);
+        taskManager.addSubtask(subTask2);
+        taskManager.deleteSubtask(subTask1.getId());
+        assertTrue((epic.getSubtasks().size() == 1) && (!epic.getSubtasks().containsKey(subTask1.getId())), "ID удаляемой задачи должен удаляться из таблицы подзадач");
+    }
+
+    @Test
+    void shouldBeEqualWithTheSameID() {
+        Task task1 = new Task("Test Task1", "Test Task1 description");
+        Task task2 = new Task("Test Task2", "Test Task2 description");
+        taskManager.addTask(task1);
+        taskManager.addTask(task2);
+        task2.setId(task1.getId());
+        assertTrue(task1.equals(task2), "Задачи с одинаковыми ID некорректно считаются разными");
     }
 
 }
