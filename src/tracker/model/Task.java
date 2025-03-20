@@ -58,6 +58,10 @@ public class Task {
                 + '}';
     }
 
+    public TaskType getType() {
+        return TaskType.TASK;
+    }
+
     public static int getNewIdentificator() {
         return ++identificator;
     }

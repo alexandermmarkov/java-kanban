@@ -5,9 +5,9 @@ import tracker.model.Task;
 import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    public Node<Task> head;
-    public Node<Task> tail;
-    private Map<Integer, Node<Task>> nodes;
+    public Node head;
+    public Node tail;
+    private final Map<Integer, Node> nodes;
 
     public InMemoryHistoryManager() {
         nodes = new HashMap<>();
@@ -21,13 +21,13 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public void remove(int taskID) {
         if (nodes.containsKey(taskID)) {
-            Node<Task> node = nodes.get(taskID);
+            Node node = nodes.get(taskID);
             nodes.remove(taskID);
             removeNode(node);
         }
     }
 
-    public void removeNode(Node<Task> node) {
+    public void removeNode(Node node) {
         if (node.prev != null) {
             node.prev.next = node.next;
         } else {
@@ -43,14 +43,14 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     public void linkLast(Task task) {
-        Node<Task> node = nodes.get(task.getId());
+        Node node = nodes.get(task.getId());
         if (node != null) {
             nodes.remove(task.getId());
             removeNode(node);
         }
 
-        Node<Task> prevTail = tail;
-        tail = new Node<>(prevTail, task, null);
+        Node prevTail = tail;
+        tail = new Node(prevTail, task, null);
         if (prevTail == null) {
             head = tail;
         } else {
@@ -61,12 +61,24 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     public List<Task> getTasks() {
         List<Task> tasks = new ArrayList<>();
-        Node<Task> node = head;
+        Node node = head;
         while (node != null) {
             tasks.add(node.data);
             node = node.next;
         }
         return tasks;
+    }
+
+    public static class Node {
+        public Task data;
+        public Node next;
+        public Node prev;
+
+        public Node(Node prev, Task data, Node next) {
+            this.prev = prev;
+            this.data = data;
+            this.next = next;
+        }
     }
 
     @Override

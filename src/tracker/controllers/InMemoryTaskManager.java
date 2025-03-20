@@ -1,10 +1,7 @@
 package tracker.controllers;
 
 import tracker.history.HistoryManager;
-import tracker.model.Epic;
-import tracker.model.Subtask;
-import tracker.model.Task;
-import tracker.model.TaskStatus;
+import tracker.model.*;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -34,7 +31,7 @@ public class InMemoryTaskManager implements TaskManager {
         tasks = new HashMap<>();
         List<Task> tasks = historyManager.getHistory();
         for (Task task : tasks) {
-            if (!(task instanceof Epic) && !(task instanceof Subtask)) {
+            if (task.getType() == TaskType.TASK) {
                 historyManager.remove(task.getId());
             }
         }
@@ -86,7 +83,7 @@ public class InMemoryTaskManager implements TaskManager {
         subtasks = new HashMap<>();
         List<Task> epics = historyManager.getHistory();
         for (Task epic : epics) {
-            if (epic instanceof Epic) {
+            if (epic.getType() == TaskType.EPIC) {
                 historyManager.remove(epic.getId());
             }
         }
@@ -178,7 +175,7 @@ public class InMemoryTaskManager implements TaskManager {
         subtasks = new HashMap<>();
         List<Task> subTasks = historyManager.getHistory();
         for (Task subTask : subTasks) {
-            if (subTask instanceof Subtask) {
+            if (subTask.getType() == TaskType.SUBTASK) {
                 historyManager.remove(subTask.getId());
             }
         }
