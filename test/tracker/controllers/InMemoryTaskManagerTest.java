@@ -8,8 +8,6 @@ import tracker.model.Epic;
 import tracker.model.Subtask;
 import tracker.model.Task;
 
-import java.util.List;
-
 class InMemoryTaskManagerTest {
 
     private TaskManager taskManager;
@@ -95,7 +93,7 @@ class InMemoryTaskManagerTest {
         taskManager.addTask(task1);
         taskManager.addTask(task2);
         task2.setId(task1.getId());
-        assertTrue(task1.equals(task2), "Задачи с одинаковыми ID некорректно считаются разными");
+        assertEquals(task1, task2, "Задачи с одинаковыми ID некорректно считаются разными");
     }
 
 }
