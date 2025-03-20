@@ -21,16 +21,21 @@ public class Epic extends Task {
                 + '}';
     }
 
+    @Override
+    public TaskType getType() {
+        return TaskType.EPIC;
+    }
+
     public HashMap<Integer, Subtask> getSubtasks() {
         return subtasks;
     }
 
-    public void addSubtask(int id, Task subtask) {
+    public void addSubtask(Task subtask) {
         if (!(subtask instanceof Subtask)) {
             return;
         }
-        if (!subtasks.containsKey(id)) {
-            subtasks.put(id, (Subtask) subtask);
+        if (!subtasks.containsKey(subtask.getId())) {
+            subtasks.put(subtask.getId(), (Subtask) subtask);
         }
     }
 

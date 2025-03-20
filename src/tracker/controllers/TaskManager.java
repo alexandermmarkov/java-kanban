@@ -6,6 +6,7 @@ import tracker.model.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public interface TaskManager {
     ArrayList<Task> getTasks();
@@ -48,5 +49,5 @@ public interface TaskManager {
 
     void deleteSubtask(int id);
 
-    ArrayList<Task> getHistory();
+    List<Task> getHistory();
 }

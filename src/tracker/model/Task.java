@@ -1,6 +1,5 @@
 package tracker.model;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
 public class Task {
@@ -41,12 +40,12 @@ public class Task {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return id == task.id && Objects.equals(name, task.name) && Objects.equals(description, task.description) && status == task.status;
+        return id == task.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, description, status, id);
+        return Objects.hash(id);
     }
 
     @Override
@@ -57,6 +56,10 @@ public class Task {
                 + "description='" + description + "', "
                 + "status='" + status + "', "
                 + '}';
+    }
+
+    public TaskType getType() {
+        return TaskType.TASK;
     }
 
     public static int getNewIdentificator() {
