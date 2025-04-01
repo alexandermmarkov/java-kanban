@@ -65,7 +65,7 @@ public class FileBackedTaskManagerTest {
                     + taskManager.getSubtasks().size() + 1)
                     && array[0].equals("id,type,name,status,description,epic"));
         } catch (IOException e) {
-            System.out.println("Возникла ошибка при чтении файла '" + file.getName() + "' в тесте shouldCreateEmptyFile");
+            System.out.println("Возникла ошибка при чтении файла '" + file.getName() + "' в тесте shouldWriteTasksIntoFile");
         }
     }
 

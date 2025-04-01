@@ -25,6 +25,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     });
 
     public FileBackedTaskManager(File file) {
+        super();
         this.file = file;
     }
 
@@ -46,7 +47,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
         System.out.println("В первом менеджере всего " + taskManager1.getAllTasks().size() + " задач.");
         System.out.println("Во втором менеджере всего " + taskManager2.getAllTasks().size() + " задач.");
-        System.out.println(taskManager1.getAllTasks().equals(taskManager2.getAllTasks()) ? "Оба менеджера задач равны" : "Менеджеры задач отличаются");
+        System.out.println(taskManager1.getAllTasks().equals(taskManager2.getAllTasks())
+                ? "Оба менеджера задач равны." : "Менеджеры задач отличаются.");
 
         if (!file.delete()) {
             System.out.println("Возникли проблемы при удалении временного файла '" + file.getAbsolutePath() + "'");
@@ -180,7 +182,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         } else if (taskType.equals(TaskType.EPIC.name())) {
             task = new Epic(taskData[2], taskData[4], taskID, taskData[3]);
         } else {
-            task = new Subtask(taskData[2], taskData[4], getEpicByID(Integer.parseInt(taskData[5])), taskID, taskData[3]);
+            task = new Subtask(taskData[2], taskData[4], getEpicsMap().get(Integer.parseInt(taskData[5])), taskID, taskData[3]);
         }
         return task;
     }

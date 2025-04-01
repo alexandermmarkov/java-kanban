@@ -92,5 +92,10 @@ public class Main {
         for (Task task : taskManager.getAllTasks().values()) {
             System.out.println(taskManager.toString(task));
         }
+        System.out.println("История:");
+        taskManager.getTaskByID(2);
+        taskManager.getTaskByID(1);
+        taskManager.getSubtaskByID(5);
+        System.out.println(taskManager.getHistory());
     }
 }
