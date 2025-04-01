@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
-    private final static String CSV_HEADER = "id,type,name,status,description,epic";
+    private static final String CSV_HEADER = "id,type,name,status,description,epic";
     private final File file;
 
     private final Map<Integer, Task> allTasks = new TreeMap<>(new Comparator<>() {
