@@ -6,6 +6,7 @@ import tracker.model.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
     private HashMap<Integer, Task> tasks;
@@ -24,6 +25,10 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public ArrayList<Task> getTasks() {
         return new ArrayList<>(tasks.values());
+    }
+
+    public Map<Integer, Task> getTasksMap() {
+        return tasks;
     }
 
     @Override
@@ -75,6 +80,10 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public ArrayList<Epic> getEpics() {
         return new ArrayList<>(epics.values());
+    }
+
+    public Map<Integer, Epic> getEpicsMap() {
+        return epics;
     }
 
     @Override
@@ -166,6 +175,10 @@ public class InMemoryTaskManager implements TaskManager {
         return new ArrayList<>(subtasks.values());
     }
 
+    public Map<Integer, Subtask> getSubtasksMap() {
+        return subtasks;
+    }
+
     @Override
     public void clearSubtasks() {
         for (Epic epic : epics.values()) {
@@ -224,7 +237,6 @@ public class InMemoryTaskManager implements TaskManager {
             historyManager.remove(id);
         }
     }
-
     /// ---------------------------------
 
     @Override
