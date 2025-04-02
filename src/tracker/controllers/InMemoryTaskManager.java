@@ -27,8 +27,13 @@ public class InMemoryTaskManager implements TaskManager {
         return new ArrayList<>(tasks.values());
     }
 
+    @Override
     public Map<Integer, Task> getTasksMap() {
-        return tasks;
+        return new HashMap<>(tasks);
+    }
+
+    protected void setTasksMap(Task task) {
+        tasks.put(task.getId(), task);
     }
 
     @Override
@@ -82,8 +87,13 @@ public class InMemoryTaskManager implements TaskManager {
         return new ArrayList<>(epics.values());
     }
 
+    @Override
     public Map<Integer, Epic> getEpicsMap() {
-        return epics;
+        return new HashMap<>(epics);
+    }
+
+    protected void setEpicsMap(Epic epic) {
+        epics.put(epic.getId(), epic);
     }
 
     @Override
@@ -175,8 +185,13 @@ public class InMemoryTaskManager implements TaskManager {
         return new ArrayList<>(subtasks.values());
     }
 
+    @Override
     public Map<Integer, Subtask> getSubtasksMap() {
-        return subtasks;
+        return new HashMap<>(subtasks);
+    }
+
+    protected void setSubtasks(Subtask subtask) {
+        subtasks.put(subtask.getId(), subtask);
     }
 
     @Override

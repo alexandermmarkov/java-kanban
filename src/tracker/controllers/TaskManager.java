@@ -7,6 +7,7 @@ import tracker.model.Task;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface TaskManager {
     ArrayList<Task> getTasks();
@@ -50,4 +51,10 @@ public interface TaskManager {
     void deleteSubtask(int id);
 
     List<Task> getHistory();
+
+    Map<Integer, Task> getTasksMap();
+
+    Map<Integer, Epic> getEpicsMap();
+
+    Map<Integer, Subtask> getSubtasksMap();
 }

@@ -137,7 +137,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return file;
     }
 
-    public void save() throws ManagerSaveException {
+    private void save() throws ManagerSaveException {
         uniteTasks();
 
         try (FileWriter writer = new FileWriter(file)) {
@@ -146,18 +146,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 writer.write(toString(task) + "\n");
             }
         } catch (IOException e) {
-            throw new ManagerSaveException("Возникла ошибка при записи данных в файл '" + file.getAbsolutePath() + "'.");
+            throw new ManagerSaveException("Возникла ошибка при записи данных в файл '" + file.getAbsolutePath()
+                    + "': " + e.getMessage());
         }
     }
 
-    public void uniteTasks() {
+    private void uniteTasks() {
         allTasks.clear();
         allTasks.putAll(getTasksMap());
         allTasks.putAll(getEpicsMap());
         allTasks.putAll(getSubtasksMap());
     }
 
-    public String toString(Task task) {
+    private String toString(Task task) {
         int epicId = -1;
         if (task.getType() == TaskType.SUBTASK) {
             Subtask subtask = (Subtask) task;
@@ -171,7 +172,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 (epicId >= 0 ? epicId : "");
     }
 
-    public Task fromString(String value) {
+    private Task fromString(String value) {
         String[] taskData = value.split(",");
         int taskID = Integer.parseInt(taskData[0]);
         String taskType = taskData[1];
@@ -182,24 +183,21 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         } else if (taskType.equals(TaskType.EPIC.name())) {
             task = new Epic(taskData[2], taskData[4], taskID, taskData[3]);
         } else {
-            task = new Subtask(taskData[2], taskData[4], getEpicsMap().get(Integer.parseInt(taskData[5])), taskID, taskData[3]);
+            task = new Subtask(taskData[2], taskData[4], getEpicsMap().get(Integer.parseInt(taskData[5])), taskID,
+                    taskData[3]);
         }
         return task;
     }
 
     public static FileBackedTaskManager loadFromFile(File file) {
         FileBackedTaskManager taskManager = new FileBackedTaskManager(file);
-        if (!file.exists()) {
-            System.out.println("Файл '" + file.getAbsolutePath() + "' не существует.");
-            return taskManager;
-        }
 
         try {
             String contents = Files.readString(file.toPath());
             if (contents.isBlank()) {
-                System.out.println("Файл '" + file.getAbsolutePath() + "' пустой.");
                 return taskManager;
             }
+
             String[] tasks = contents.split("\n");
             for (String taskLine : tasks) {
                 if (taskLine.equals(CSV_HEADER)) {
@@ -208,18 +206,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 Task task = taskManager.fromString(taskLine);
                 switch (task.getType()) {
                     case TaskType.TASK:
-                        taskManager.getTasksMap().put(task.getId(), task);
+                        taskManager.setTasksMap(task);
                         break;
                     case TaskType.EPIC:
-                        taskManager.getEpicsMap().put(task.getId(), (Epic) task);
+                        taskManager.setEpicsMap((Epic) task);
                         break;
                     default:
-                        taskManager.getSubtasksMap().put(task.getId(), (Subtask) task);
+                        taskManager.setSubtasks((Subtask) task);
                         break;
                 }
             }
         } catch (IOException e) {
-            System.out.println("Возникла ошибка при попытке загрузки менеджера задач из файла '" + file.getName() + "'");
+            throw new ManagerSaveException("Возникла ошибка при попытке загрузки менеджера задач из файла '"
+                    + file.getAbsolutePath() + "': " + e.getMessage());
         }
         return taskManager;
     }

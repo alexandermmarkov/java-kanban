@@ -1,6 +1,6 @@
 package tracker.controllers;
 
-import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tracker.model.Epic;
@@ -8,6 +8,7 @@ import tracker.model.Subtask;
 import tracker.model.Task;
 
 import java.io.*;
+import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,7 +33,7 @@ public class FileBackedTaskManagerTest {
         try {
             String contents = Files.readString(file.toPath());
             String[] lines = contents.split("\n");
-            assertTrue( file.exists() && (lines.length == 1) && (lines[0].isEmpty()));
+            assertTrue(file.exists() && (lines.length == 1) && (lines[0].isEmpty()));
         } catch (IOException e) {
             System.out.println("Возникла ошибка при чтении файла '" + file.getName() + "' в тесте shouldCreateEmptyFile");
         }
@@ -83,8 +84,10 @@ public class FileBackedTaskManagerTest {
         assertEquals(3, taskManager.getAllTasks().size());
     }
 
-    @AfterAll
-    static void deleteTempFile() {
-        file.deleteOnExit();
+    @AfterEach
+    void deleteTempFile() throws FileSystemException {
+        if (!file.delete()) {
+            throw new FileSystemException("Не удалось удалить временный файл '" + file.getAbsolutePath() + "'");
+        }
     }
 }
