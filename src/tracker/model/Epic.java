@@ -10,6 +10,11 @@ public class Epic extends Task {
         subtasks = new HashMap<>();
     }
 
+    public Epic(String name, String description, int id, String status) {
+        super(name, description, id, status);
+        subtasks = new HashMap<>();
+    }
+
     @Override
     public String toString() {
         return "Epic{"

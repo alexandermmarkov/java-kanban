@@ -6,6 +6,7 @@ import tracker.model.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
     private HashMap<Integer, Task> tasks;
@@ -24,6 +25,15 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public ArrayList<Task> getTasks() {
         return new ArrayList<>(tasks.values());
+    }
+
+    @Override
+    public Map<Integer, Task> getTasksMap() {
+        return new HashMap<>(tasks);
+    }
+
+    protected void setTasksMap(Task task) {
+        tasks.put(task.getId(), task);
     }
 
     @Override
@@ -75,6 +85,15 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public ArrayList<Epic> getEpics() {
         return new ArrayList<>(epics.values());
+    }
+
+    @Override
+    public Map<Integer, Epic> getEpicsMap() {
+        return new HashMap<>(epics);
+    }
+
+    protected void setEpicsMap(Epic epic) {
+        epics.put(epic.getId(), epic);
     }
 
     @Override
@@ -167,6 +186,15 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
+    public Map<Integer, Subtask> getSubtasksMap() {
+        return new HashMap<>(subtasks);
+    }
+
+    protected void setSubtasks(Subtask subtask) {
+        subtasks.put(subtask.getId(), subtask);
+    }
+
+    @Override
     public void clearSubtasks() {
         for (Epic epic : epics.values()) {
             epic.deleteSubtasks();
@@ -224,7 +252,6 @@ public class InMemoryTaskManager implements TaskManager {
             historyManager.remove(id);
         }
     }
-
     /// ---------------------------------
 
     @Override
