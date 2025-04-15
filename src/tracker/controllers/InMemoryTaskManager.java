@@ -3,7 +3,6 @@ package tracker.controllers;
 import tracker.history.HistoryManager;
 import tracker.model.*;
 
-import javax.swing.text.html.Option;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
