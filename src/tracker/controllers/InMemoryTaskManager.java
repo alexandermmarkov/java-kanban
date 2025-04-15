@@ -174,7 +174,7 @@ public class InMemoryTaskManager implements TaskManager {
                         return -1;
                     }
                     return 0;
-        });
+                });
         Optional<LocalDateTime> endDateTime = epic.getSubtasks().values().stream()
                 .filter(subtask -> subtask.getStartTime().isPresent() && subtask.getEndTime().isPresent())
                 .map(subtask -> subtask.getEndTime().get())
@@ -186,12 +186,14 @@ public class InMemoryTaskManager implements TaskManager {
                     }
                     return 0;
                 });
+
         startDateTime.ifPresent(localDateTime -> epic.setStartTime(localDateTime.format(Task.DATE_FORMATTER)));
         endDateTime.ifPresent(localDateTime -> epic.setEndTime(localDateTime.format(Task.DATE_FORMATTER)));
+
         Duration duration = Duration.ZERO;
-        for (Subtask subtask: epic.getSubtasks().values()) {
+        for (Subtask subtask : epic.getSubtasks().values()) {
             if (subtask.getDuration().isEmpty()) continue;
-            duration = duration.plusMinutes(subtask.getDuration().get().toMinutes());
+            duration = duration.plus(subtask.getDuration().get());
         }
         epic.setDuration(duration.toMinutes());
     }
