@@ -8,10 +8,9 @@ import tracker.model.Epic;
 import tracker.model.Subtask;
 import tracker.model.Task;
 
-class InMemoryTaskManagerTest {
+import java.util.Optional;
 
-    private TaskManager taskManager;
-
+class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     @BeforeEach
     public void initializeTaskManager() {
         taskManager = new InMemoryTaskManager();
@@ -19,38 +18,38 @@ class InMemoryTaskManagerTest {
 
     @Test
     void shouldAddAndFindAllTypesOfTasks() {
-        Task task = new Task("Test Task", "Test Task description");
-        Epic epic = new Epic("Test Epic", "Test Epic description");
-        Subtask subtask = new Subtask("Test Subtask", "Test Subtask description", epic);
+        Task task = createTask(1);
+        Epic epic = createEpic(1);
+        Subtask subtask = createSubtask(epic, 1);
 
         taskManager.addTask(task);
         final int taskId = task.getId();
-        final Task savedTask = taskManager.getTaskByID(taskId);
+        final Optional<Task> savedTask = taskManager.getTaskByID(taskId);
 
         taskManager.addEpic(epic);
         final int epicId = epic.getId();
-        final Epic savedEpic = taskManager.getEpicByID(epicId);
+        final Optional<Epic> savedEpic = taskManager.getEpicByID(epicId);
 
         taskManager.addSubtask(subtask);
         final int subtaskId = subtask.getId();
-        final Subtask savedSubtask = taskManager.getSubtaskByID(subtaskId);
+        final Optional<Subtask> savedSubtask = taskManager.getSubtaskByID(subtaskId);
 
         assertNotNull(savedTask, "Задача не найдена.");
-        assertEquals(task, savedTask, "Задачи не совпадают.");
+        assertEquals(task, savedTask.get(), "Задачи не совпадают.");
 
         assertNotNull(savedEpic, "Эпик не найдена.");
-        assertEquals(epic, savedEpic, "Эпики не совпадают.");
+        assertEquals(epic, savedEpic.get(), "Эпики не совпадают.");
 
         assertNotNull(savedSubtask, "Подзадача не найдена.");
-        assertEquals(subtask, savedSubtask, "Подзадачи не совпадают.");
+        assertEquals(subtask, savedSubtask.get(), "Подзадачи не совпадают.");
     }
 
     @Test
     void shouldAssignNewIdIfAlreadyUsed() {
-        Task task1 = new Task("Test Task1", "Test Task1 description");
-        Task task2 = new Task("Test Task2", "Test Task2 description");
-        Task task3 = new Task("Test Task3", "Test Task3 description");
-        Task task4 = new Task("Test Task4", "Test Task4 description");
+        Task task1 = createTask(1);
+        Task task2 = createTask(2);
+        Task task3 = createTask(3);
+        Task task4 = createTask(4);
 
         taskManager.addTask(task1);
         task2.setId(1);
@@ -65,35 +64,37 @@ class InMemoryTaskManagerTest {
 
     @Test
     void shouldKeepTasksInManagerUnaltered() {
-        Task task1 = new Task("Test Task1", "Test Task1 description");
-        Task task2 = new Task("Test Task2", "Test Task2 description");
+        Task task1 = createTask(1);
+        Task task2 = createTask(2);
 
         taskManager.addTask(task1);
         taskManager.addTask(task2);
-        assertEquals(task1, taskManager.getTaskByID(task1.getId()), "Задача с ID = '" + task1.getId() + "' изменена после добавления в Менеджер задач.");
-        assertEquals(task2, taskManager.getTaskByID(task2.getId()), "Задача с ID = '" + task2.getId() + "' изменена после добавления в Менеджер задач.");
+        assertEquals(task1, taskManager.getTaskByID(task1.getId()).get(), "Задача с ID = '" + task1.getId()
+                + "' изменена после добавления в Менеджер задач.");
+        assertEquals(task2, taskManager.getTaskByID(task2.getId()).get(), "Задача с ID = '" + task2.getId()
+                + "' изменена после добавления в Менеджер задач.");
     }
 
     @Test
     void shouldDeleteSubtaskFromEpic() {
-        Epic epic = new Epic("Test Epic", "Test Epic description");
-        Subtask subTask1 = new Subtask("Test Subtask1", "Test Subtask1 description", epic);
-        Subtask subTask2 = new Subtask("Test Subtask2", "Test Subtask2 description", epic);
+        Epic epic = createEpic(1);
+        Subtask subTask1 = createSubtask(epic, 1);
+        Subtask subTask2 = createSubtask(epic, 2);
         taskManager.addEpic(epic);
         taskManager.addSubtask(subTask1);
         taskManager.addSubtask(subTask2);
         taskManager.deleteSubtask(subTask1.getId());
-        assertTrue((epic.getSubtasks().size() == 1) && (!epic.getSubtasks().containsKey(subTask1.getId())), "ID удаляемой задачи должен удаляться из таблицы подзадач");
+        assertTrue((epic.getSubtasks().size() == 1) && (!epic.getSubtasks().containsKey(subTask1.getId())),
+                "ID удаляемой задачи должен удаляться из таблицы подзадач");
     }
 
     @Test
     void shouldBeEqualWithTheSameID() {
-        Task task1 = new Task("Test Task1", "Test Task1 description");
-        Task task2 = new Task("Test Task2", "Test Task2 description");
+        Task task1 = createTask(1);
+        Task task2 = createTask(2);
         taskManager.addTask(task1);
         taskManager.addTask(task2);
         task2.setId(task1.getId());
         assertEquals(task1, task2, "Задачи с одинаковыми ID некорректно считаются разными");
     }
-
 }

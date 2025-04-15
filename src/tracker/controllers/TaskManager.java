@@ -4,17 +4,14 @@ import tracker.model.Epic;
 import tracker.model.Subtask;
 import tracker.model.Task;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public interface TaskManager {
     ArrayList<Task> getTasks();
 
     void clearTasks();
 
-    Task getTaskByID(int taskID);
+    Optional<Task> getTaskByID(int taskID);
 
     void addTask(Task task);
 
@@ -26,7 +23,7 @@ public interface TaskManager {
 
     void clearEpics();
 
-    Epic getEpicByID(int epicID);
+    Optional<Epic> getEpicByID(int epicID);
 
     void addEpic(Epic epic);
 
@@ -36,13 +33,15 @@ public interface TaskManager {
 
     void updateEpicStatus(Epic epic);
 
+    void updateEpicTime(Epic epic);
+
     HashMap<Integer, Subtask> getSubtasksOfEpic(int epicID);
 
     ArrayList<Subtask> getSubtasks();
 
     void clearSubtasks();
 
-    Subtask getSubtaskByID(int subtaskID);
+    Optional<Subtask> getSubtaskByID(int subtaskID);
 
     void addSubtask(Subtask subtask);
 

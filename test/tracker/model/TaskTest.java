@@ -7,9 +7,9 @@ import tracker.controllers.InMemoryTaskManager;
 import tracker.controllers.TaskManager;
 
 import java.util.List;
+import java.util.Optional;
 
 class TaskTest {
-
     private final TaskManager taskManager = new InMemoryTaskManager();
 
     @Test
@@ -18,10 +18,10 @@ class TaskTest {
         taskManager.addTask(task);
         final int taskId = task.getId();
 
-        final Task savedTask = taskManager.getTaskByID(taskId);
+        final Optional<Task> savedTask = taskManager.getTaskByID(taskId);
 
         assertNotNull(savedTask, "Задача не найдена.");
-        assertEquals(task, savedTask, "Задачи не совпадают.");
+        assertEquals(task, savedTask.get(), "Задачи не совпадают.");
 
         final List<Task> tasks = taskManager.getTasks();
 
@@ -34,8 +34,9 @@ class TaskTest {
     void updateTask() {
         Task task = new Task("Task", "Task Description");
         taskManager.addTask(task);
-        taskManager.updateTask(task.getId(), new Task("UpdatedTask", "Updated Task Description", "IN_PROGRESS"));
-        task = taskManager.getTaskByID(task.getId());
+        taskManager.updateTask(task.getId(), new Task("UpdatedTask", "Updated Task Description",
+                "IN_PROGRESS"));
+        task = taskManager.getTaskByID(task.getId()).get();
         assertEquals("UpdatedTask Updated Task Description IN_PROGRESS",
                 task.getName() + " " + task.getDescription() + " " + task.getStatus(),
                 "Задачи обновляются некорректно в Менеджере задач.");
@@ -46,8 +47,8 @@ class TaskTest {
         Task task = new Task("TaskToDelete", "Task To Delete Description");
         taskManager.addTask(task);
         taskManager.deleteTask(task.getId());
-        task = taskManager.getTaskByID(task.getId());
-        assertNull(task, "Удаление задач работает некорректно в Менеджере задач.");
+        assertTrue(taskManager.getTaskByID(task.getId()).isEmpty(),
+                "Удаление задач работает некорректно в Менеджере задач.");
     }
 
 }

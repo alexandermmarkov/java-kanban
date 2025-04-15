@@ -5,6 +5,7 @@ import tracker.model.Subtask;
 import tracker.model.Task;
 
 import java.io.File;
+import java.time.LocalDateTime;
 
 public class Main {
 
@@ -63,24 +64,31 @@ public class Main {
     private static String getHistory(TaskManager manager) {
         StringBuilder history = new StringBuilder();
         for (Task task : manager.getHistory()) {
-            history.append((history.isEmpty()) ? "" : ", ").append(task.getClass().getSimpleName()).append("ID = ").append(task.getId());
+            history.append((history.isEmpty()) ? "" : ", ").append(task.getClass().getSimpleName())
+                    .append("ID = ").append(task.getId());
         }
         return history.toString();
     }
 
     private static void loadIntoFile(TaskManager manager) {
-        Task task1 = new Task("Задача1", "Тестовая задача #1");
-        Task task2 = new Task("Задача2", "Тестовая задача #2");
+        Task task1 = new Task("Задача1", "Тестовая задача #1",
+                LocalDateTime.now().format(Task.DATE_FORMATTER), 60);
+        Task task2 = new Task("Задача2", "Тестовая задача #2",
+                task1.getStartTime().get().plusMinutes(75).format(Task.DATE_FORMATTER), 90);
+        Task task3 = new Task("Задача3", "Тестовая задача #3");
         manager.addTask(task1);
         manager.addTask(task2);
+        manager.addTask(task3);
 
         Epic epic1 = new Epic("Эпик1", "Тестовый Эпик #1");
         Epic epic2 = new Epic("Эпик2", "Тестовый Эпик #2");
         manager.addEpic(epic1);
         manager.addEpic(epic2);
 
-        Subtask subtask1 = new Subtask("Подзадача1", "Тестовая подзадача #1", epic1);
-        Subtask subtask2 = new Subtask("Подзадача2", "Тестовая подзадача #2", epic1);
+        Subtask subtask1 = new Subtask("Подзадача1", "Тестовая подзадача #1", epic1,
+                task1.getStartTime().get().plusMinutes(200).format(Task.DATE_FORMATTER), 10);
+        Subtask subtask2 = new Subtask("Подзадача2", "Тестовая подзадача #2", epic1,
+                task1.getStartTime().get().plusMinutes(225).format(Task.DATE_FORMATTER), 20);
         Subtask subtask3 = new Subtask("Подзадача3", "Тестовая подзадача #3", epic1);
         manager.addSubtask(subtask1);
         manager.addSubtask(subtask2);
@@ -89,7 +97,7 @@ public class Main {
 
     private static void loadFromFile(File file) {
         FileBackedTaskManager taskManager = FileBackedTaskManager.loadFromFile(file);
-        for (Task task : taskManager.getAllTasks().values()) {
+        for (Task task : taskManager.getPrioritizedTasks()) {
             System.out.println(task);
         }
         /*System.out.println("История:");
