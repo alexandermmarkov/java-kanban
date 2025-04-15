@@ -3,6 +3,7 @@ package tracker.controllers;
 import tracker.history.HistoryManager;
 import tracker.model.*;
 
+import javax.swing.text.html.Option;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -164,21 +165,35 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateEpicTime(Epic epic) {
         if (epic.getSubtasks().isEmpty()) return;
-        LocalDateTime startTime = LocalDateTime.MAX;
-        LocalDateTime endTime = LocalDateTime.MIN;
-        Duration duration = Duration.ofMinutes(0);
-        for (Subtask subtask : epic.getSubtasks().values()) {
-            if (subtask.getStartTime().isEmpty() || subtask.getEndTime().isEmpty()) continue;
-            if (subtask.getStartTime().get().isBefore(startTime)) {
-                startTime = subtask.getStartTime().get();
-            }
-            if (subtask.getEndTime().get().isAfter(endTime)) {
-                endTime = subtask.getEndTime().get();
-            }
-            duration = duration.plus(Duration.between(startTime, endTime));
+        Optional<LocalDateTime> startDateTime = epic.getSubtasks().values().stream()
+                .filter(subtask -> subtask.getStartTime().isPresent() && subtask.getEndTime().isPresent())
+                .map(subtask -> subtask.getStartTime().get())
+                .min((startTime1, startTime2) -> {
+                    if (startTime1.isAfter(startTime2)) {
+                        return 1;
+                    } else if (startTime1.isBefore(startTime2)) {
+                        return -1;
+                    }
+                    return 0;
+        });
+        Optional<LocalDateTime> endDateTime = epic.getSubtasks().values().stream()
+                .filter(subtask -> subtask.getStartTime().isPresent() && subtask.getEndTime().isPresent())
+                .map(subtask -> subtask.getEndTime().get())
+                .max((endTime1, endTime2) -> {
+                    if (endTime1.isAfter(endTime2)) {
+                        return 1;
+                    } else if (endTime1.isBefore(endTime2)) {
+                        return -1;
+                    }
+                    return 0;
+                });
+        startDateTime.ifPresent(localDateTime -> epic.setStartTime(localDateTime.format(Task.DATE_FORMATTER)));
+        endDateTime.ifPresent(localDateTime -> epic.setEndTime(localDateTime.format(Task.DATE_FORMATTER)));
+        Duration duration = Duration.ZERO;
+        for (Subtask subtask: epic.getSubtasks().values()) {
+            if (subtask.getDuration().isEmpty()) continue;
+            duration = duration.plusMinutes(subtask.getDuration().get().toMinutes());
         }
-        if (!startTime.equals(LocalDateTime.MAX)) epic.setStartTime(startTime.format(Task.DATE_FORMATTER));
-        if (!endTime.equals(LocalDateTime.MIN)) epic.setEndTime(endTime.format(Task.DATE_FORMATTER));
         epic.setDuration(duration.toMinutes());
     }
 

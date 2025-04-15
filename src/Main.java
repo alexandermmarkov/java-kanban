@@ -74,7 +74,7 @@ public class Main {
         Task task1 = new Task("Задача1", "Тестовая задача #1",
                 LocalDateTime.now().format(Task.DATE_FORMATTER), 60);
         Task task2 = new Task("Задача2", "Тестовая задача #2",
-                task1.getStartTime().get().plusMinutes(75).format(Task.DATE_FORMATTER), 90);
+                task1.getStartTime().get().minusMinutes(75).format(Task.DATE_FORMATTER), 15);
         Task task3 = new Task("Задача3", "Тестовая задача #3");
         manager.addTask(task1);
         manager.addTask(task2);
