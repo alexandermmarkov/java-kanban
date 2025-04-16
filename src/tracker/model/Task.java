@@ -130,6 +130,10 @@ public class Task {
         return Optional.empty();
     }
 
+    public void setDuration(int durationInMinutes) {
+        duration = Duration.ofMinutes(durationInMinutes);
+    }
+
     public Optional<LocalDateTime> getStartTime() {
         if (startTime != null) return Optional.of(startTime);
         return Optional.empty();

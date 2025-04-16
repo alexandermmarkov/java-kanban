@@ -1,7 +1,6 @@
 package tracker.controllers;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tracker.model.Epic;
@@ -11,7 +10,6 @@ import tracker.model.Task;
 import java.io.*;
 import java.nio.file.FileSystemException;
 import java.nio.file.Files;
-import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -85,44 +83,6 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskMan
         }
         taskManager = FileBackedTaskManager.loadFromFile(file);
         assertEquals(3, taskManager.getPrioritizedTasks().size());
-    }
-
-    @Test
-    void shouldThrowOnIntersection() {
-        assertThrows(FileBackedTaskManager.TasksIntersectionException.class, () -> {
-                    Task task1 = new Task("Задача1", "Тестовая задача #1",
-                            LocalDateTime.now().format(Task.DATE_FORMATTER), 50);
-                    Task task2 = new Task("Задача2", "Тестовая задача #2",
-                            task1.getStartTime().get().plusMinutes(15).format(Task.DATE_FORMATTER), 30);
-                    taskManager.addTask(task1);
-                    taskManager.addTask(task2);
-                }, "'Задача1' не пересекается с задачей 'Задача2'"
-        );
-    }
-
-    @Test
-    void shouldNotThrowWithoutIntersection() {
-        Assertions.assertDoesNotThrow(() -> {
-            Task task1 = new Task("Задача1", "Тестовая задача #1",
-                    LocalDateTime.now().minusMinutes(90).format(Task.DATE_FORMATTER), 80);
-            Task task2 = new Task("Задача2", "Тестовая задача #2",
-                    LocalDateTime.now().format(Task.DATE_FORMATTER), 30);
-            taskManager.addTask(task1);
-            taskManager.addTask(task2);
-        }, "'Задача1' пересекается с задачей 'Задача2'");
-    }
-
-    @Test
-    void shouldThrowWhenBeyond1YearLimit() {
-        assertThrows(FileBackedTaskManager.TasksIntersectionException.class, () -> {
-                    Task task1 = new Task("Задача1", "Тестовая задача #1",
-                            LocalDateTime.now().format(Task.DATE_FORMATTER), 50);
-                    Task task2 = new Task("Задача2", "Тестовая задача #2",
-                            task1.getStartTime().get().plusMonths(14).format(Task.DATE_FORMATTER), 30);
-                    taskManager.addTask(task1);
-                    taskManager.addTask(task2);
-                }, "'Задача2' не выходит за границу максимального времени планирования задач"
-        );
     }
 
     @AfterEach

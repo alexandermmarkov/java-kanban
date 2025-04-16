@@ -4,6 +4,7 @@ import tracker.model.Epic;
 import tracker.model.Subtask;
 import tracker.model.Task;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 public interface TaskManager {
@@ -56,4 +57,12 @@ public interface TaskManager {
     Map<Integer, Epic> getEpicsMap();
 
     Map<Integer, Subtask> getSubtasksMap();
+
+    List<Task> getPrioritizedTasks();
+
+    boolean isNotIntersect(Task taskToCheck);
+
+    void setTaskIntervals(LocalDateTime startTime, LocalDateTime endTime);
+
+    Map<LocalDateTime, Boolean> getTaskIntervals();
 }
