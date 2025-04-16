@@ -11,11 +11,9 @@ import java.io.*;
 import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class FileBackedTaskManagerTest {
-    private static FileBackedTaskManager taskManager;
+public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     private static File file;
 
     @BeforeEach
@@ -35,26 +33,27 @@ public class FileBackedTaskManagerTest {
             String[] lines = contents.split("\n");
             assertTrue(file.exists() && (lines.length == 1) && (lines[0].isEmpty()));
         } catch (IOException e) {
-            System.out.println("Возникла ошибка при чтении файла '" + file.getName() + "' в тесте shouldCreateEmptyFile");
+            System.out.println("Возникла ошибка при чтении файла '" + file.getName()
+                    + "' в тесте shouldCreateEmptyFile");
         }
     }
 
     @Test
     void shouldWriteTasksIntoFile() {
         try {
-            Task task1 = new Task("Задача1", "Тестовая задача #1");
-            Task task2 = new Task("Задача2", "Тестовая задача #2");
+            Task task1 = createTask(1);
+            Task task2 = createTask(2);
             taskManager.addTask(task1);
             taskManager.addTask(task2);
 
-            Epic epic1 = new Epic("Эпик1", "Тестовый Эпик #1");
-            Epic epic2 = new Epic("Эпик2", "Тестовый Эпик #2");
+            Epic epic1 = createEpic(1);
+            Epic epic2 = createEpic(2);
             taskManager.addEpic(epic1);
             taskManager.addEpic(epic2);
 
-            Subtask subtask1 = new Subtask("Подзадача1", "Тестовая подзадача #1", epic1);
-            Subtask subtask2 = new Subtask("Подзадача2", "Тестовая подзадача #2", epic1);
-            Subtask subtask3 = new Subtask("Подзадача3", "Тестовая подзадача #3", epic1);
+            Subtask subtask1 = createSubtask(epic1, 1);
+            Subtask subtask2 = createSubtask(epic1, 2);
+            Subtask subtask3 = createSubtask(epic1, 3);
             taskManager.addSubtask(subtask1);
             taskManager.addSubtask(subtask2);
             taskManager.addSubtask(subtask3);
@@ -64,24 +63,26 @@ public class FileBackedTaskManagerTest {
 
             assertTrue((array.length == taskManager.getTasks().size() + taskManager.getEpics().size()
                     + taskManager.getSubtasks().size() + 1)
-                    && array[0].equals("id,type,name,status,description,epic"));
+                    && array[0].equals("id,type,name,status,description,duration,startTime,endTime,epic"));
         } catch (IOException e) {
-            System.out.println("Возникла ошибка при чтении файла '" + file.getName() + "' в тесте shouldWriteTasksIntoFile");
+            System.out.println("Возникла ошибка при чтении файла '" + file.getName()
+                    + "' в тесте shouldWriteTasksIntoFile");
         }
     }
 
     @Test
     void shouldImportTasksFromFile() {
         try (FileWriter writer = new FileWriter(file)) {
-            writer.write("id,type,name,status,description,epic\n");
-            writer.write("1,TASK,Задача1,NEW,Тестовая задача #1,\n");
-            writer.write("2,EPIC,Эпик1,NEW,Тестовый Эпик #1,\n");
-            writer.write("3,SUBTASK,Подзадача1,NEW,Тестовая подзадача #1,2\n");
+            writer.write("id,type,name,status,description,duration,startTime,endTime,epic\n");
+            writer.write("1,TASK,Задача1,NEW,Тестовая задача #1,60,14.04.2025 13:15,14.04.2025 14:15,\n");
+            writer.write("4,EPIC,Эпик1,NEW,Тестовый Эпик #1,45,14.04.2025 13:45,14.04.2025 14:20,\n");
+            writer.write("7,SUBTASK,Подзадача2,NEW,Тестовая подзадача #2,20,14.04.2025 14:00,14.04.2025 14:20,4\n");
         } catch (IOException e) {
-            System.out.println("Возникла ошибка при открытии файла '" + file.getName() + "' в тесте shouldImportTasksFromFile");
+            System.out.println("Возникла ошибка при открытии файла '" + file.getName()
+                    + "' в тесте shouldImportTasksFromFile");
         }
         taskManager = FileBackedTaskManager.loadFromFile(file);
-        assertEquals(3, taskManager.getAllTasks().size());
+        assertEquals(3, taskManager.getPrioritizedTasks().size());
     }
 
     @AfterEach

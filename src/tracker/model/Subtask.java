@@ -23,6 +23,17 @@ public class Subtask extends Task {
         this.epic = epic;
     }
 
+    public Subtask(String name, String description, Epic epic, String startTime, int minutesToComplete) {
+        super(name, description, startTime, minutesToComplete);
+        this.epic = epic;
+
+    }
+
+    public Subtask(String name, String description, Epic epic, int id, String status, String startTime, int minutesToComplete) {
+        super(name, description, id, status, startTime, minutesToComplete);
+        this.epic = epic;
+    }
+
     @Override
     public String toString() {
         return "Subtask{"
@@ -30,7 +41,10 @@ public class Subtask extends Task {
                 + "name='" + name + "', "
                 + "description='" + description + "', "
                 + "epic=" + epic + "', "
-                + "status='" + status
+                + "status='" + status + "'"
+                + (getDuration().isPresent() ? ", duration='" + duration.toMinutes() + "'" : "")
+                + (getStartTime().isPresent() ? ", startTime='" + startTime.format(DATE_FORMATTER) + "'" : "")
+                + (getEndTime().isPresent() ? ", endTime='" + getEndTime().get().format(DATE_FORMATTER) + "'" : "")
                 + '}';
     }
 
