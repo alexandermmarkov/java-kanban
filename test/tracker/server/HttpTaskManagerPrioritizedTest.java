@@ -111,10 +111,11 @@ public class HttpTaskManagerPrioritizedTest {
         JsonElement jsonElement = JsonParser.parseString(response.body());
 
         assertTrue(jsonElement.isJsonArray(), "Некорректное тело ответа на запрос GET /prioritized");
-        assertTrue(jsonElement.getAsJsonArray().get(0).getAsJsonObject().get("name").getAsString()
-                        .equals(task3.getName())
-                        && jsonElement.getAsJsonArray().get(2).getAsJsonObject().get("name").getAsString()
-                        .equals(task2.getName())
+        assertTrue(jsonElement.getAsJsonArray().get(0).getAsJsonObject().get("id").getAsInt()
+                        == manager.getPrioritizedTasks().getFirst().getId()
+                        && jsonElement.getAsJsonArray().get(2).getAsJsonObject().get("id").getAsInt()
+                        == manager.getPrioritizedTasks().getLast().getId()
+                        && jsonElement.getAsJsonArray().size() == manager.getPrioritizedTasks().size()
                         && jsonElement.getAsJsonArray().size() == 3,
                 "Запрос GET /prioritized возвращает некорректный ответ");
     }
