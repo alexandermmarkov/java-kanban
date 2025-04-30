@@ -116,7 +116,7 @@ public class HttpTaskManagerPrioritizedTest {
                         && jsonElement.getAsJsonArray().get(2).getAsJsonObject().get("id").getAsInt()
                         == manager.getPrioritizedTasks().getLast().getId()
                         && jsonElement.getAsJsonArray().size() == manager.getPrioritizedTasks().size()
-                        && jsonElement.getAsJsonArray().size() == 3,
+                        && manager.getPrioritizedTasks().size() == 3,
                 "Запрос GET /prioritized возвращает некорректный ответ");
     }
 }
