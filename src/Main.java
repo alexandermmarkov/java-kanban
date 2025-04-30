@@ -46,7 +46,7 @@ public class Main {
         for (Task epic : manager.getEpics()) {
             System.out.println(epic);
 
-            for (Task task : manager.getSubtasksOfEpic(epic.getId()).values()) {
+            for (Task task : manager.getEpicSubtasks(epic.getId()).values()) {
                 System.out.println("--> " + task);
             }
         }
@@ -85,11 +85,11 @@ public class Main {
         manager.addEpic(epic1);
         manager.addEpic(epic2);
 
-        Subtask subtask1 = new Subtask("Подзадача1", "Тестовая подзадача #1", epic1,
+        Subtask subtask1 = new Subtask("Подзадача1", "Тестовая подзадача #1", epic1.getId(),
                 task1.getStartTime().get().plusMinutes(200).format(Task.DATE_FORMATTER), 10);
-        Subtask subtask2 = new Subtask("Подзадача2", "Тестовая подзадача #2", epic1,
+        Subtask subtask2 = new Subtask("Подзадача2", "Тестовая подзадача #2", epic1.getId(),
                 task1.getStartTime().get().plusMinutes(225).format(Task.DATE_FORMATTER), 20);
-        Subtask subtask3 = new Subtask("Подзадача3", "Тестовая подзадача #3", epic1);
+        Subtask subtask3 = new Subtask("Подзадача3", "Тестовая подзадача #3", epic1.getId());
         manager.addSubtask(subtask1);
         manager.addSubtask(subtask2);
         manager.addSubtask(subtask3);

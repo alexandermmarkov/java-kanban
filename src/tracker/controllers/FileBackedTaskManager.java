@@ -35,9 +35,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         taskManager1.addEpic(epic);
         taskManager1.addEpic(new Epic("Эпик2", "Тестовый Эпик #2"));
 
-        taskManager1.addSubtask(new Subtask("Подзадача1", "Тестовая подзадача #1", epic,
+        taskManager1.addSubtask(new Subtask("Подзадача1", "Тестовая подзадача #1", epic.getId(),
                 LocalDateTime.now().plusMinutes(210).format(Task.DATE_FORMATTER), 15));
-        taskManager1.addSubtask(new Subtask("Подзадача2", "Тестовая подзадача #2", epic,
+        taskManager1.addSubtask(new Subtask("Подзадача2", "Тестовая подзадача #2", epic.getId(),
                 LocalDateTime.now().plusMinutes(225).format(Task.DATE_FORMATTER), 30));
 
         FileBackedTaskManager taskManager2 = FileBackedTaskManager.loadFromFile(file);
@@ -151,7 +151,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         int epicId = -1;
         if (task.getType() == TaskType.SUBTASK) {
             Subtask subtask = (Subtask) task;
-            epicId = subtask.getEpic().getId();
+            epicId = subtask.getEpicId();
         }
         return task.getId() + "," +
                 task.getType() + "," +
@@ -181,9 +181,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 break;
             default:
                 task = (taskData[6].isBlank() ? new Subtask(taskData[2], taskData[4],
-                        getEpicsMap().get(Integer.parseInt(taskData[8])), taskID,
+                        Integer.parseInt(taskData[8]), taskID,
                         taskData[3]) :
-                        new Subtask(taskData[2], taskData[4], getEpicsMap().get(Integer.parseInt(taskData[8])), taskID,
+                        new Subtask(taskData[2], taskData[4], Integer.parseInt(taskData[8]), taskID,
                                 taskData[3], taskData[6], Integer.parseInt(taskData[5])));
                 break;
         }
@@ -217,10 +217,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     });
 
             taskManager.getSubtasksMap().values().stream()
-                    .filter(subtask -> taskManager.getEpicsMap().containsKey(subtask.getEpic().getId()))
+                    .filter(subtask -> taskManager.getEpicsMap().containsKey(subtask.getEpicId()))
                     .map(subtask -> {
-                        subtask.getEpic().addSubtask(subtask);
-                        return subtask.getEpic();
+                        taskManager.getEpicsMap().get(subtask.getEpicId()).addSubtask(subtask);
+                        return taskManager.getEpicsMap().get(subtask.getEpicId());
                     })
                     .toList()
                     .forEach(taskManager::updateEpicTime);
