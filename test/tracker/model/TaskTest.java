@@ -48,5 +48,4 @@ class TaskTest {
         assertThrows(NotFoundException.class, () -> taskManager.getTaskByID(task.getId()),
                 "Удаление задач работает некорректно в Менеджере задач.");
     }
-
 }

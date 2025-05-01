@@ -90,6 +90,7 @@ public class EpicsHandler extends BaseHttpHandler {
         }
     }
 
+    @Override
     void handleDeleteTask(HttpExchange exchange) throws IOException {
         try {
             int epicID = Integer.parseInt(exchange.getRequestURI().getPath().split("/")[2]);

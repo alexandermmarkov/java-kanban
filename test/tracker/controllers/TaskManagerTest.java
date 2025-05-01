@@ -91,7 +91,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         taskManager.deleteTask(task4.getId());
         assertTrue(taskManager.getPrioritizedTasks().size() == 3
-                && taskManager.getPrioritizedTasks().getLast().getId() == task3.getId(),
+                        && taskManager.getPrioritizedTasks().getLast().getId() == task3.getId(),
                 "Удаление задач из отсортированного по времени списка работает некорректно.");
     }
 }

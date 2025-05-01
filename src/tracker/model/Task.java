@@ -152,7 +152,7 @@ public class Task {
     }
 
     public Optional<LocalDateTime> getEndTime() {
-       if (startTime != null && duration != null) return Optional.of(startTime.plus(duration));
-       return Optional.empty();
+        if (startTime != null && duration != null) return Optional.of(startTime.plus(duration));
+        return Optional.empty();
     }
 }

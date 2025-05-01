@@ -104,12 +104,14 @@ public class HttpTaskManagerHistoryTest {
         int epicID = manager.getEpics().getLast().getId();
         int subtaskID = manager.getSubtasks().getLast().getId();
 
+        /// заполняем историю
         assertEquals(200, getTaskById("epics", epicID));
         assertEquals(200, getTaskById("tasks", taskID));
         assertEquals(200, getTaskById("subtasks", subtaskID));
         assertEquals(200, getTaskById("epics", epicID));
         assertEquals(200, getTaskById("subtasks", subtaskID));
 
+        /// получаем историю
         request = HttpRequest.newBuilder()
                 .uri(url)
                 .GET()
