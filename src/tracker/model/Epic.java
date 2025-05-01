@@ -46,6 +46,9 @@ public class Epic extends Task {
         if (!(subtask instanceof Subtask)) {
             return;
         }
+        if (subtasks == null) {
+            subtasks = new HashMap<>();
+        }
         if (!subtasks.containsKey(subtask.getId())) {
             subtasks.put(subtask.getId(), (Subtask) subtask);
         }
@@ -60,6 +63,10 @@ public class Epic extends Task {
     }
 
     public void setEndTime(String endTime) {
+        if (endTime == null) {
+            this.endTime = null;
+            return;
+        }
         this.endTime = LocalDateTime.parse(endTime, Task.DATE_FORMATTER);
     }
 

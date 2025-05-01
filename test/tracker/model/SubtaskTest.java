@@ -5,26 +5,26 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import tracker.controllers.InMemoryTaskManager;
 import tracker.controllers.TaskManager;
+import tracker.exceptions.NotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 class SubtaskTest {
     private final TaskManager taskManager = new InMemoryTaskManager();
 
     @Test
     void addNewSubtask() {
+        Epic epic = new Epic("Epic", "Epic");
+        taskManager.addEpic(epic);
         Subtask subtask = new Subtask("Test addNewSubtask", "Test addNewSubtask description",
-                new Epic("Epic", "Epic"), LocalDateTime.now().format(Task.DATE_FORMATTER),
+                epic.getId(), LocalDateTime.now().format(Task.DATE_FORMATTER),
                 60);
         taskManager.addSubtask(subtask);
         final int subtaskId = subtask.getId();
 
-        final Optional<Subtask> savedSubtask = taskManager.getSubtaskByID(subtaskId);
-
-        assertNotNull(savedSubtask, "Подзадача не найдена.");
-        assertEquals(subtask, savedSubtask.get(), "Подзадача не совпадают.");
+        assertDoesNotThrow(() -> taskManager.getSubtaskByID(subtaskId), "Подзадача не найдена.");
+        assertEquals(subtask, taskManager.getSubtaskByID(subtaskId), "Подзадача не совпадают.");
 
         final List<Subtask> subtasks = taskManager.getSubtasks();
 
@@ -36,12 +36,14 @@ class SubtaskTest {
     @Test
     void updateSubtask() {
         Epic epic = new Epic("Epic", "Epic");
-        Subtask subtask = new Subtask("Subtask", "Subtask Description", epic,
+        epic.setId(1);
+        taskManager.addEpic(epic);
+        Subtask subtask = new Subtask("Subtask", "Subtask Description", epic.getId(),
                 LocalDateTime.now().format(Task.DATE_FORMATTER), 10);
         taskManager.addSubtask(subtask);
         taskManager.updateSubtask(subtask.getId(), new Subtask("UpdatedSubtask",
-                "Updated Subtask Description", epic, "IN_PROGRESS"));
-        subtask = taskManager.getSubtaskByID(subtask.getId()).get();
+                "Updated Subtask Description", epic.getId(), "IN_PROGRESS"));
+        subtask = taskManager.getSubtaskByID(subtask.getId());
         assertEquals("UpdatedSubtask Updated Subtask Description IN_PROGRESS",
                 subtask.getName() + " " + subtask.getDescription() + " " + subtask.getStatus(),
                 "Подзадачи обновляются некорректно в Менеджере задач.");
@@ -53,7 +55,7 @@ class SubtaskTest {
                 LocalDateTime.now().format(Task.DATE_FORMATTER), 180);
         taskManager.addTask(task);
         taskManager.deleteTask(task.getId());
-        assertTrue(taskManager.getTaskByID(task.getId()).isEmpty(),
+        assertThrows(NotFoundException.class, () -> taskManager.getTaskByID(task.getId()),
                 "Удаление задач работает некорректно в Менеджере задач.");
     }
 
@@ -61,9 +63,9 @@ class SubtaskTest {
     void epicIsLinked() {
         Epic epic = new Epic("Epic", "Epic Description");
         taskManager.addEpic(epic);
-        Subtask subtask = new Subtask("Subtask", "Subtask Description", epic,
+        Subtask subtask = new Subtask("Subtask", "Subtask Description", epic.getId(),
                 LocalDateTime.now().format(Task.DATE_FORMATTER), 10);
         taskManager.addSubtask(subtask);
-        assertEquals(subtask.getEpic().getId(), epic.getId(), "Эпик не был привзян к подзадаче.");
+        assertEquals(subtask.getEpicId(), epic.getId(), "Эпик не был привзян к подзадаче.");
     }
 }

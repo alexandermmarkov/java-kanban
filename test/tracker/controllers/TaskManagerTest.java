@@ -28,7 +28,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     protected Subtask createSubtask(Epic epic, int num) {
-        return new Subtask("Test Subtask" + num, "Test Subtask" + num + " description", epic);
+        return new Subtask("Test Subtask" + num, "Test Subtask" + num + " description", epic.getId());
     }
 
     @Test

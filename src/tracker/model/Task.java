@@ -93,6 +93,10 @@ public class Task {
         return ++identificator;
     }
 
+    public static void resetIdentificator() {
+        identificator = 0;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -140,6 +144,10 @@ public class Task {
     }
 
     public void setStartTime(String startTime) {
+        if (startTime == null) {
+            this.startTime = null;
+            return;
+        }
         this.startTime = LocalDateTime.parse(startTime, Task.DATE_FORMATTER);
     }
 

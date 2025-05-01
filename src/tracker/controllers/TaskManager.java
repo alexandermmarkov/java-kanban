@@ -12,7 +12,7 @@ public interface TaskManager {
 
     void clearTasks();
 
-    Optional<Task> getTaskByID(int taskID);
+    Task getTaskByID(int taskID);
 
     void addTask(Task task);
 
@@ -24,7 +24,7 @@ public interface TaskManager {
 
     void clearEpics();
 
-    Optional<Epic> getEpicByID(int epicID);
+    Epic getEpicByID(int epicID);
 
     void addEpic(Epic epic);
 
@@ -36,13 +36,13 @@ public interface TaskManager {
 
     void updateEpicTime(Epic epic);
 
-    HashMap<Integer, Subtask> getSubtasksOfEpic(int epicID);
+    HashMap<Integer, Subtask> getEpicSubtasks(int epicID);
 
     ArrayList<Subtask> getSubtasks();
 
     void clearSubtasks();
 
-    Optional<Subtask> getSubtaskByID(int subtaskID);
+    Subtask getSubtaskByID(int subtaskID);
 
     void addSubtask(Subtask subtask);
 
@@ -62,7 +62,9 @@ public interface TaskManager {
 
     boolean isNotIntersect(Task taskToCheck);
 
-    void setTaskIntervals(LocalDateTime startTime, LocalDateTime endTime);
+    void setTaskIntervals(Integer taskID, LocalDateTime startTime, LocalDateTime endTime);
 
-    Map<LocalDateTime, Boolean> getTaskIntervals();
+    Map<LocalDateTime, Integer> getTaskIntervals();
+
+    void releaseTaskIntervals(Task task);
 }

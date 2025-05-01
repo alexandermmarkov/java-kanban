@@ -5,9 +5,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import tracker.controllers.InMemoryTaskManager;
 import tracker.controllers.TaskManager;
+import tracker.exceptions.NotFoundException;
 
 import java.util.List;
-import java.util.Optional;
 
 class TaskTest {
     private final TaskManager taskManager = new InMemoryTaskManager();
@@ -18,10 +18,8 @@ class TaskTest {
         taskManager.addTask(task);
         final int taskId = task.getId();
 
-        final Optional<Task> savedTask = taskManager.getTaskByID(taskId);
-
-        assertNotNull(savedTask, "Задача не найдена.");
-        assertEquals(task, savedTask.get(), "Задачи не совпадают.");
+        assertDoesNotThrow(() -> taskManager.getTaskByID(taskId), "Задача не найдена.");
+        assertEquals(task, taskManager.getTaskByID(taskId), "Задачи не совпадают.");
 
         final List<Task> tasks = taskManager.getTasks();
 
@@ -36,7 +34,7 @@ class TaskTest {
         taskManager.addTask(task);
         taskManager.updateTask(task.getId(), new Task("UpdatedTask", "Updated Task Description",
                 "IN_PROGRESS"));
-        task = taskManager.getTaskByID(task.getId()).get();
+        task = taskManager.getTaskByID(task.getId());
         assertEquals("UpdatedTask Updated Task Description IN_PROGRESS",
                 task.getName() + " " + task.getDescription() + " " + task.getStatus(),
                 "Задачи обновляются некорректно в Менеджере задач.");
@@ -47,7 +45,7 @@ class TaskTest {
         Task task = new Task("TaskToDelete", "Task To Delete Description");
         taskManager.addTask(task);
         taskManager.deleteTask(task.getId());
-        assertTrue(taskManager.getTaskByID(task.getId()).isEmpty(),
+        assertThrows(NotFoundException.class, () -> taskManager.getTaskByID(task.getId()),
                 "Удаление задач работает некорректно в Менеджере задач.");
     }
 

@@ -1,37 +1,38 @@
 package tracker.model;
 
 public class Subtask extends Task {
-    private final Epic epic;
+    private final int epicId;
 
-    public Subtask(String name, String description, Epic epic) {
+    public Subtask(String name, String description, int epicId) {
         super(name, description);
-        this.epic = epic;
+        this.epicId = epicId;
     }
 
-    public Subtask(String name, String description, Epic epic, int id) {
+    public Subtask(String name, String description, int epicId, int id) {
         super(name, description, id);
-        this.epic = epic;
+        this.epicId = epicId;
     }
 
-    public Subtask(String name, String description, Epic epic, String status) {
+    public Subtask(String name, String description, int epicId, String status) {
         super(name, description, status);
-        this.epic = epic;
+        this.epicId = epicId;
     }
 
-    public Subtask(String name, String description, Epic epic, int id, String status) {
+    public Subtask(String name, String description, int epicId, int id, String status) {
         super(name, description, id, status);
-        this.epic = epic;
+        this.epicId = epicId;
     }
 
-    public Subtask(String name, String description, Epic epic, String startTime, int minutesToComplete) {
+    public Subtask(String name, String description, int epicId, String startTime, int minutesToComplete) {
         super(name, description, startTime, minutesToComplete);
-        this.epic = epic;
+        this.epicId = epicId;
 
     }
 
-    public Subtask(String name, String description, Epic epic, int id, String status, String startTime, int minutesToComplete) {
+    public Subtask(String name, String description, int epicId, int id, String status, String startTime,
+                   int minutesToComplete) {
         super(name, description, id, status, startTime, minutesToComplete);
-        this.epic = epic;
+        this.epicId = epicId;
     }
 
     @Override
@@ -40,7 +41,7 @@ public class Subtask extends Task {
                 + "id='" + id + "', "
                 + "name='" + name + "', "
                 + "description='" + description + "', "
-                + "epic=" + epic + "', "
+                + "epicId='" + epicId + "', "
                 + "status='" + status + "'"
                 + (getDuration().isPresent() ? ", duration='" + duration.toMinutes() + "'" : "")
                 + (getStartTime().isPresent() ? ", startTime='" + startTime.format(DATE_FORMATTER) + "'" : "")
@@ -53,7 +54,7 @@ public class Subtask extends Task {
         return TaskType.SUBTASK;
     }
 
-    public Epic getEpic() {
-        return epic;
+    public int getEpicId() {
+        return epicId;
     }
 }
