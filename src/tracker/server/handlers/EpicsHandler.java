@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class EpicsHandler extends BaseHttpHandler {
     public EpicsHandler(TaskManager taskManager) {
-        this.taskManager = taskManager;
+        super(taskManager);
     }
 
     @Override

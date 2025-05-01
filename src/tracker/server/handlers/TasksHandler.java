@@ -15,7 +15,7 @@ import java.util.List;
 
 public class TasksHandler extends BaseHttpHandler {
     public TasksHandler(TaskManager taskManager) {
-        this.taskManager = taskManager;
+        super(taskManager);
     }
 
     @Override

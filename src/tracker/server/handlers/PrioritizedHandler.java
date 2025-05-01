@@ -9,7 +9,7 @@ import java.util.List;
 
 public class PrioritizedHandler extends BaseHttpHandler {
     public PrioritizedHandler(TaskManager taskManager) {
-        this.taskManager = taskManager;
+        super(taskManager);
     }
 
     @Override

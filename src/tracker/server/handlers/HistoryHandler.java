@@ -9,7 +9,7 @@ import java.util.List;
 
 public class HistoryHandler extends BaseHttpHandler {
     public HistoryHandler(TaskManager taskManager) {
-        this.taskManager = taskManager;
+        super(taskManager);
     }
 
     @Override

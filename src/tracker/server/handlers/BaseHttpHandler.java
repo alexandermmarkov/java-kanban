@@ -22,6 +22,10 @@ public abstract class BaseHttpHandler implements HttpHandler {
     public static final String CONTENTTYPE_JSON = "application/json;charset=utf-8";
     protected TaskManager taskManager;
 
+    protected BaseHttpHandler(TaskManager taskManager) {
+        this.taskManager = taskManager;
+    }
+
     private enum Endpoint {
         GET_TASKS,
         GET_TASK,
