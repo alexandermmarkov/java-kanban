@@ -1,9 +1,8 @@
-package tracker.server;
+package tracker.server.handlers;
 
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
 import tracker.controllers.TaskManager;
 import tracker.exceptions.ManagerSaveException;
 import tracker.exceptions.NotFoundException;
@@ -14,40 +13,13 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-public class SubtasksHandler extends BaseHttpHandler implements HttpHandler {
+public class SubtasksHandler extends BaseHttpHandler {
     public SubtasksHandler(TaskManager taskManager) {
-        super(taskManager);
+        this.taskManager = taskManager;
     }
 
     @Override
-    public void handle(HttpExchange exchange) throws IOException {
-        //System.out.println("Началась обработка /subtasks запроса от клиента.");
-
-        Endpoint endpoint = getEndpoint(exchange.getRequestURI().getPath(), exchange.getRequestMethod());
-
-        switch (endpoint) {
-            case GET_TASKS: {
-                handleGetSubtasks(exchange);
-                break;
-            }
-            case GET_TASK: {
-                handleGetSubtask(exchange);
-                break;
-            }
-            case POST_TASK: {
-                handlePostSubtask(exchange);
-                break;
-            }
-            case DELETE_TASK: {
-                handleDeleteSubtask(exchange);
-                break;
-            }
-            default:
-                sendNotFound(exchange, "Такого эндпоинта не существует.");
-        }
-    }
-
-    private void handleGetSubtasks(HttpExchange exchange) throws IOException {
+    void handleGetTasks(HttpExchange exchange) throws IOException {
         List<Subtask> subtaskList = taskManager.getSubtasks();
         if (subtaskList.isEmpty()) {
             sendNotFound(exchange, "Список подзадач пуст.");
@@ -56,7 +28,8 @@ public class SubtasksHandler extends BaseHttpHandler implements HttpHandler {
         sendText(exchange, GSON.toJson(subtaskList));
     }
 
-    private void handleGetSubtask(HttpExchange exchange) throws IOException {
+    @Override
+    void handleGetTask(HttpExchange exchange) throws IOException {
         try {
             int subtaskID = Integer.parseInt(exchange.getRequestURI().getPath().split("/")[2]);
             Subtask subtask = taskManager.getSubtaskByID(subtaskID);
@@ -68,7 +41,8 @@ public class SubtasksHandler extends BaseHttpHandler implements HttpHandler {
         }
     }
 
-    private void handlePostSubtask(HttpExchange exchange) throws IOException {
+    @Override
+    void handlePostTask(HttpExchange exchange) throws IOException {
         try {
             String stringSubtask = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
             if (!JsonParser.parseString(stringSubtask).isJsonObject()) {
@@ -97,7 +71,8 @@ public class SubtasksHandler extends BaseHttpHandler implements HttpHandler {
         }
     }
 
-    private void handleDeleteSubtask(HttpExchange exchange) throws IOException {
+    @Override
+    void handleDeleteTask(HttpExchange exchange) throws IOException {
         try {
             int subtaskID = Integer.parseInt(exchange.getRequestURI().getPath().split("/")[2]);
             taskManager.deleteSubtask(subtaskID);

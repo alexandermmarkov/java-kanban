@@ -1,9 +1,8 @@
-package tracker.server;
+package tracker.server.handlers;
 
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
 import tracker.controllers.TaskManager;
 import tracker.exceptions.ManagerSaveException;
 import tracker.exceptions.NotFoundException;
@@ -16,73 +15,17 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
-public class EpicsHandler extends BaseHttpHandler implements HttpHandler {
+public class EpicsHandler extends BaseHttpHandler {
     public EpicsHandler(TaskManager taskManager) {
-        super(taskManager);
+        this.taskManager = taskManager;
     }
 
     @Override
-    public void handle(HttpExchange exchange) throws IOException {
-        //System.out.println("Началась обработка /tasks запроса от клиента.");
-
-        Endpoint endpoint = getEndpoint(exchange.getRequestURI().getPath(), exchange.getRequestMethod());
-
-        switch (endpoint) {
-            case GET_TASKS: {
-                if (exchange.getRequestURI().getPath().split("/").length == 4) {
-                    handleGetEpicsSubtasks(exchange);
-                    break;
-                }
-                handleGetEpics(exchange);
-                break;
-            }
-            case GET_TASK: {
-                handleGetEpic(exchange);
-                break;
-            }
-            case POST_TASK: {
-                handlePostEpic(exchange);
-                break;
-            }
-            case DELETE_TASK: {
-                handleDeleteEpic(exchange);
-                break;
-            }
-            default:
-                sendNotFound(exchange, "Такого эндпоинта не существует.");
+    void handleGetTasks(HttpExchange exchange) throws IOException {
+        if (exchange.getRequestURI().getPath().split("/").length == 4) {
+            handleGetEpicsSubtasks(exchange);
+            return;
         }
-    }
-
-    @Override
-    public Endpoint getEndpoint(String requestPath, String requestMethod) {
-        String[] pathParts = requestPath.split("/");
-
-        switch (requestMethod) {
-            case "GET":
-                if ((pathParts.length == 2) || (pathParts.length == 4)) {
-                    return Endpoint.GET_TASKS;
-                } else if (pathParts.length == 3) {
-                    return Endpoint.GET_TASK;
-                }
-                break;
-            case "POST":
-                if (pathParts.length == 2) {
-                    return Endpoint.POST_TASK;
-                }
-                break;
-            case "DELETE":
-                if (pathParts.length == 3) {
-                    return Endpoint.DELETE_TASK;
-                }
-                break;
-            default:
-                return Endpoint.UNKNOWN;
-        }
-
-        return Endpoint.UNKNOWN;
-    }
-
-    private void handleGetEpics(HttpExchange exchange) throws IOException {
         List<Epic> epicsList = taskManager.getEpics();
         if (epicsList.isEmpty()) {
             sendNotFound(exchange, "Список эпиков пуст.");
@@ -91,7 +34,7 @@ public class EpicsHandler extends BaseHttpHandler implements HttpHandler {
         sendText(exchange, GSON.toJson(epicsList));
     }
 
-    private void handleGetEpicsSubtasks(HttpExchange exchange) throws IOException {
+    void handleGetEpicsSubtasks(HttpExchange exchange) throws IOException {
         try {
             int epicID = Integer.parseInt(exchange.getRequestURI().getPath().split("/")[2]);
             Map<Integer, Subtask> subtasksMap = taskManager.getEpicSubtasks(epicID);
@@ -107,7 +50,8 @@ public class EpicsHandler extends BaseHttpHandler implements HttpHandler {
         }
     }
 
-    private void handleGetEpic(HttpExchange exchange) throws IOException {
+    @Override
+    void handleGetTask(HttpExchange exchange) throws IOException {
         try {
             int epicID = Integer.parseInt(exchange.getRequestURI().getPath().split("/")[2]);
             Epic epic = taskManager.getEpicByID(epicID);
@@ -119,7 +63,8 @@ public class EpicsHandler extends BaseHttpHandler implements HttpHandler {
         }
     }
 
-    private void handlePostEpic(HttpExchange exchange) throws IOException {
+    @Override
+    void handlePostTask(HttpExchange exchange) throws IOException {
         try {
             String stringEpic = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
             if (!JsonParser.parseString(stringEpic).isJsonObject()) {
@@ -145,7 +90,7 @@ public class EpicsHandler extends BaseHttpHandler implements HttpHandler {
         }
     }
 
-    private void handleDeleteEpic(HttpExchange exchange) throws IOException {
+    void handleDeleteTask(HttpExchange exchange) throws IOException {
         try {
             int epicID = Integer.parseInt(exchange.getRequestURI().getPath().split("/")[2]);
             taskManager.deleteEpic(epicID);
